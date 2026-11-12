@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '17'
@@ -23,8 +23,6 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
         with:
-          # NOTA: Se eliminó 'tools' de la lista de paquetes ya que está deprecado y causa el error 1.
-          # En su lugar, especificamos las herramientas modernas necesarias:
           packages: |
             platform-tools
             build-tools;34.0.0
