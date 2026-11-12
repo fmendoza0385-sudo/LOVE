@@ -51,6 +51,6 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build --stacktrace
         env:
-          ANDROID_HOME: ${{ github.workspace }}/android-sdk # O usar $HOME/android-sdk
+          ANDROID_HOME: ${{ home }}/android-sdk
