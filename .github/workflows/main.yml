@@ -1,45 +1,38 @@
-name: Compilar LUKKA Televisión APK
+name: Android CI
 
 on:
-  workflow_dispatch:
   push:
-    branches: [ "main" ]
+    branches: [ main, master ]
   pull_request:
-    branches: [ "main" ]
-
-permissions:
-  contents: read
+    branches: [ main, master ]
 
 jobs:
   build:
-    name: Build Android APK
     runs-on: ubuntu-latest
+
     steps:
-      - name: Descargar código
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Configurar JDK 21
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: temurin
-          java-version: "21"
-          cache: gradle
+          distribution: 'temurin'
+          java-version: '17'
 
-      - name: Configurar Android SDK
+      - name: Setup Android SDK
         uses: android-actions/setup-android@v3
-
-      - name: Instalar Gradle 8.13
-        uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: "8.13"
+          # NOTA: Se eliminó 'tools' de la lista de paquetes ya que está deprecado y causa el error 1.
+          # En su lugar, especificamos las herramientas modernas necesarias:
+          packages: |
+            platform-tools
+            build-tools;34.0.0
+            platforms;android-34
+            cmdline-tools;latest
 
-      - name: Compilar APK Debug
-        run: gradle --no-daemon clean assembleDebug
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
-      - name: Publicar APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: LUKKA-Television-debug
-          path: app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
-          retention-days: 14
+      - name: Build with Gradle
+        run: ./gradlew build
